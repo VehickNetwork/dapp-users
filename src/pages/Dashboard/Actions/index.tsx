@@ -9,15 +9,13 @@ import {
 import {
   Address,
   AddressValue,
-  BigUIntValue,
   ContractFunction,
   ProxyProvider,
+  StringValue,
   Query
 } from '@elrondnetwork/erdjs';
-import BigNumber from '@elrondnetwork/erdjs/node_modules/bignumber.js/bignumber.js';
 import { faArrowUp, faArrowDown } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import moment from 'moment';
 import { contractAddress } from 'config';
 
 const Actions = () => {
@@ -26,37 +24,17 @@ const Actions = () => {
   const { network } = useGetNetworkConfig();
   const { address } = account;
 
-  const [secondsLeft, setSecondsLeft] = React.useState<number>();
-  const [hasPing, setHasPing] = React.useState<boolean>();
+  const [hasVin, setHasVin] = React.useState<boolean>();
   const /*transactionSessionId*/ [, setTransactionSessionId] = React.useState<
       string | null
     >(null);
 
-  const mount = () => {
-    if (secondsLeft) {
-      const interval = setInterval(() => {
-        setSecondsLeft((existing) => {
-          if (existing) {
-            return existing - 1;
-          } else {
-            clearInterval(interval);
-            return 0;
-          }
-        });
-      }, 1000);
-      return () => {
-        clearInterval(interval);
-      };
-    }
-  };
-
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  React.useEffect(mount, [hasPing]);
 
   React.useEffect(() => {
     const query = new Query({
       address: new Address(contractAddress),
-      func: new ContractFunction('getTimeToPong'),
+      func: new ContractFunction('getVIN'),
       args: [new AddressValue(new Address(address))]
     });
     const proxy = new ProxyProvider(network.apiAddress);
@@ -64,18 +42,16 @@ const Actions = () => {
       .queryContract(query)
       .then(({ returnData }) => {
         const [encoded] = returnData;
+        console.log(encoded);
         switch (encoded) {
           case undefined:
-            setHasPing(true);
+            setHasVin(false);
             break;
           case '':
-            setSecondsLeft(0);
-            setHasPing(false);
+            setHasVin(false);
             break;
           default: {
-            const decoded = Buffer.from(encoded, 'base64').toString('hex');
-            setSecondsLeft(parseInt(decoded, 16));
-            setHasPing(false);
+            setHasVin(true);
             break;
           }
         }
@@ -88,8 +64,8 @@ const Actions = () => {
 
   const { sendTransactions } = transactionServices;
 
-  const sendPingTransaction = async () => {
-    const pingTransaction = {
+  const sendMileageTransaction = async () => {
+    const mileageTransaction = {
       value: '0',
       data: `addMileage@${new Number(7600).toString(16)}`,
       receiver: contractAddress
@@ -97,11 +73,11 @@ const Actions = () => {
     await refreshAccount();
 
     const { sessionId /*, error*/ } = await sendTransactions({
-      transactions: pingTransaction,
+      transactions: mileageTransaction,
       transactionsDisplayInfo: {
-        processingMessage: 'Processing Ping transaction',
-        errorMessage: 'An error has occured during Ping',
-        successMessage: 'Ping transaction successful'
+        processingMessage: 'Processing Mileage transaction',
+        errorMessage: 'An error has occured during addMileage',
+        successMessage: 'Mileage transaction successful'
       },
       redirectAfterSign: false
     });
@@ -110,10 +86,10 @@ const Actions = () => {
     }
   };
 
-  const sendPongTransaction = async () => {
+  const sendVinTransaction = async () => {
     const pongTransaction = {
       value: '0',
-      data: 'pong',
+      data: 'addVIN@76656869636b616c696365',
       receiver: contractAddress
     };
     await refreshAccount();
@@ -132,62 +108,28 @@ const Actions = () => {
     }
   };
 
-  const pongAllowed = secondsLeft === 0 && !hasPendingTransactions;
-  const notAllowedClass = pongAllowed ? '' : 'not-allowed disabled';
-
-  const timeRemaining = moment()
-    .startOf('day')
-    .seconds(secondsLeft || 0)
-    .format('mm:ss');
-
   return (
     <div className='d-flex mt-4 justify-content-center'>
-      {hasPing !== undefined && (
-        <>
-          {hasPing && !hasPendingTransactions ? (
-            <div className='action-btn' onClick={sendPingTransaction}>
-              <button className='btn'>
-                <FontAwesomeIcon icon={faArrowUp} className='text-primary' />
-              </button>
-              <a href='/' className='text-white text-decoration-none'>
-                Ping
-              </a>
-            </div>
-          ) : (
-            <>
-              <div className='d-flex flex-column'>
-                <div
-                  {...{
-                    className: `action-btn ${notAllowedClass}`,
-                    ...(pongAllowed ? { onClick: sendPongTransaction } : {})
-                  }}
-                >
-                  <button className={`btn ${notAllowedClass}`}>
-                    <FontAwesomeIcon
-                      icon={faArrowDown}
-                      className='text-primary'
-                    />
-                  </button>
-                  <span className='text-white'>
-                    {pongAllowed ? (
-                      <a href='/' className='text-white text-decoration-none'>
-                        Pong
-                      </a>
-                    ) : (
-                      <>Pong</>
-                    )}
-                  </span>
-                </div>
-                {!pongAllowed && !hasPendingTransactions && (
-                  <span className='opacity-6 text-white'>
-                    {timeRemaining} until able to Pong
-                  </span>
-                )}
-              </div>
-            </>
-          )}
-        </>
-      )}
+      <div className='action-btn' onClick={sendMileageTransaction}>
+        <button className='btn'>
+          <FontAwesomeIcon icon={faArrowUp} className='text-primary' />
+        </button>
+        <a href='/' className='text-white text-decoration-none'>
+          addMileage
+        </a>
+      </div>
+      <div className='d-flex flex-column'>
+        <div className='action-btn' onClick={sendVinTransaction}>
+          <button className='btn'>
+            <FontAwesomeIcon icon={faArrowUp} className='text-primary' />
+          </button>
+          <span className='text-white'>
+            <a href='/' className='text-white text-decoration-none'>
+              Add VIN
+            </a>
+          </span>
+        </div>
+      </div>
     </div>
   );
 };
