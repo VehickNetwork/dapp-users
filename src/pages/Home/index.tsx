@@ -15,8 +15,8 @@ const Home = () => {
               </h2>
 
               <p className='mb-3'>
-                This is an Elrond dapp sample.
-                <br /> Login using your Elrond wallet.
+                This is an Vehick demo dashboard.
+                <br /> Login using your Vehick Credentials.
               </p>
 
               <Link

@@ -9,10 +9,12 @@ import {
 import {
   Address,
   AddressValue,
+  BigUIntValue,
   ContractFunction,
   ProxyProvider,
   Query
 } from '@elrondnetwork/erdjs';
+import BigNumber from '@elrondnetwork/erdjs/node_modules/bignumber.js/bignumber.js';
 import { faArrowUp, faArrowDown } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import moment from 'moment';
@@ -88,8 +90,8 @@ const Actions = () => {
 
   const sendPingTransaction = async () => {
     const pingTransaction = {
-      value: '1000000000000000000',
-      data: 'ping',
+      value: '0',
+      data: `addMileage@${new Number(7600).toString(16)}`,
       receiver: contractAddress
     };
     await refreshAccount();
