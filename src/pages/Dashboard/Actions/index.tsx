@@ -11,7 +11,7 @@ import {
   AddressValue,
   ContractFunction,
   ProxyProvider,
-  StringValue,
+  BytesValue,
   Query
 } from '@elrondnetwork/erdjs';
 import { faArrowUp, faArrowDown } from '@fortawesome/free-solid-svg-icons';
@@ -90,7 +90,7 @@ const Actions = () => {
   const sendVinTransaction = async () => {
     const pongTransaction = {
       value: '0',
-      data: 'addVIN@76656869636b616c696365',
+      data: `addVIN@${BytesValue.fromUTF8('bobcar')}`,
       receiver: contractAddress
     };
     await refreshAccount();
@@ -98,9 +98,31 @@ const Actions = () => {
     const { sessionId /*, error*/ } = await sendTransactions({
       transactions: pongTransaction,
       transactionsDisplayInfo: {
-        processingMessage: 'Processing Pong transaction',
-        errorMessage: 'An error has occured during Pong',
-        successMessage: 'Pong transaction successful'
+        processingMessage: 'Processing Vin transaction',
+        errorMessage: 'An error has occured during Vin',
+        successMessage: 'Vin transaction successful'
+      },
+      redirectAfterSign: false
+    });
+    if (sessionId != null) {
+      setTransactionSessionId(sessionId);
+    }
+  };
+
+  const sendMeasureUnitTransaction = async () => {
+    const pongTransaction = {
+      value: '0',
+      data: `addMeasureUnit@${BytesValue.fromUTF8('bobcar')}`,
+      receiver: contractAddress
+    };
+    await refreshAccount();
+
+    const { sessionId /*, error*/ } = await sendTransactions({
+      transactions: pongTransaction,
+      transactionsDisplayInfo: {
+        processingMessage: 'Processing MeasureUnit transaction',
+        errorMessage: 'An error has occured during MeasureUnit',
+        successMessage: 'MeasureUnit transaction successful'
       },
       redirectAfterSign: false
     });
