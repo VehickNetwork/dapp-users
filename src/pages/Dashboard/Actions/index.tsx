@@ -110,7 +110,7 @@ const Actions = () => {
   };
 
   const sendMeasureUnitTransaction = async () => {
-    const pongTransaction = {
+    const measureUnitTransaction = {
       value: '0',
       data: `addMeasureUnit@${BytesValue.fromUTF8('bobcar')}`,
       receiver: contractAddress
@@ -118,7 +118,7 @@ const Actions = () => {
     await refreshAccount();
 
     const { sessionId /*, error*/ } = await sendTransactions({
-      transactions: pongTransaction,
+      transactions: measureUnitTransaction,
       transactionsDisplayInfo: {
         processingMessage: 'Processing MeasureUnit transaction',
         errorMessage: 'An error has occured during MeasureUnit',
