@@ -25,6 +25,7 @@ const Actions = () => {
   const { address } = account;
 
   const [hasVin, setHasVin] = React.useState<boolean>();
+  const [hasMeasureUnit, setMeasurUnit] = React.useState<boolean>();
   const /*transactionSessionId*/ [, setTransactionSessionId] = React.useState<
       string | null
     >(null);
@@ -110,26 +111,50 @@ const Actions = () => {
 
   return (
     <div className='d-flex mt-4 justify-content-center'>
-      <div className='action-btn' onClick={sendMileageTransaction}>
-        <button className='btn'>
-          <FontAwesomeIcon icon={faArrowUp} className='text-primary' />
-        </button>
-        <a href='/' className='text-white text-decoration-none'>
-          addMileage
-        </a>
-      </div>
-      <div className='d-flex flex-column'>
-        <div className='action-btn' onClick={sendVinTransaction}>
+      {hasVin && !hasPendingTransactions ? (
+        <div className='action-btn' onClick={sendMileageTransaction}>
           <button className='btn'>
             <FontAwesomeIcon icon={faArrowUp} className='text-primary' />
           </button>
-          <span className='text-white'>
-            <a href='/' className='text-white text-decoration-none'>
-              Add VIN
-            </a>
-          </span>
+          <a href='/' className='text-white text-decoration-none'>
+            addMileage
+          </a>
         </div>
-      </div>
+      ) : (
+        <>
+          <div className='d-flex flex-column'>
+            <div
+              {...{
+                className: 'action-btn not-allowed disabled'
+              }}
+            ></div>
+          </div>
+        </>
+      )}
+      {!hasVin && !hasPendingTransactions ? (
+        <div className='d-flex flex-column'>
+          <div className='action-btn' onClick={sendVinTransaction}>
+            <button className='btn'>
+              <FontAwesomeIcon icon={faArrowUp} className='text-primary' />
+            </button>
+            <span className='text-white'>
+              <a href='/' className='text-white text-decoration-none'>
+                Add VIN
+              </a>
+            </span>
+          </div>
+        </div>
+      ) : (
+        <>
+          <div className='d-flex flex-column'>
+            <div
+              {...{
+                className: 'action-btn disabled'
+              }}
+            ></div>
+          </div>
+        </>
+      )}
     </div>
   );
 };
