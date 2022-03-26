@@ -1,4 +1,4 @@
 export const contractAddress =
-  'erd1qqqqqqqqqqqqqpgq83mmnl478cywl0fsxzuvu32f8enzm5za0huqq2p7ug';
+  'erd1qqqqqqqqqqqqqpgqw52fmznyqkl3vxpshgq9nhrw5g438yr40huqrna6h2';
 
 export const dAppName = 'Vehick Chain';
