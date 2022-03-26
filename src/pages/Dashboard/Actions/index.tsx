@@ -25,7 +25,7 @@ const Actions = () => {
   const { address } = account;
 
   const [hasVin, setHasVin] = React.useState<boolean>();
-  const [hasMeasureUnit, setMeasurUnit] = React.useState<boolean>();
+  const [hasMeasureUnit, setHasMeasureUnit] = React.useState<boolean>();
   const /*transactionSessionId*/ [, setTransactionSessionId] = React.useState<
       string | null
     >(null);
@@ -33,14 +33,14 @@ const Actions = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
 
   React.useEffect(() => {
-    const query = new Query({
+    const query_Vin = new Query({
       address: new Address(contractAddress),
       func: new ContractFunction('getVIN'),
       args: [new AddressValue(new Address(address))]
     });
-    const proxy = new ProxyProvider(network.apiAddress);
-    proxy
-      .queryContract(query)
+    const proxy_Vin = new ProxyProvider(network.apiAddress);
+    proxy_Vin
+      .queryContract(query_Vin)
       .then(({ returnData }) => {
         const [encoded] = returnData;
         console.log(encoded);
@@ -60,6 +60,33 @@ const Actions = () => {
       .catch((err) => {
         console.error('Unable to call VM query', err);
       });
+    const query_measureUnit = new Query({
+      address: new Address(contractAddress),
+      func: new ContractFunction('getMeasureUnit'),
+      args: [new AddressValue(new Address(address))]
+    });
+    const proxy_mesureUnit = new ProxyProvider(network.apiAddress);
+    proxy_mesureUnit
+      .queryContract(query_measureUnit)
+      .then(({ returnData }) => {
+        const [encoded] = returnData;
+        console.log(encoded);
+        switch (encoded) {
+          case undefined:
+            setHasMeasureUnit(false);
+            break;
+          case '':
+            setHasMeasureUnit(false);
+            break;
+          default: {
+            setHasMeasureUnit(true);
+            break;
+          }
+        }
+      })
+      .catch((err) => {
+        console.error('Unable to call VM query', err);
+      });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hasPendingTransactions]);
 
@@ -68,7 +95,7 @@ const Actions = () => {
   const sendMileageTransaction = async () => {
     const mileageTransaction = {
       value: '0',
-      data: `addMileage@${new Number(7600).toString(16)}`,
+      data: `addMileage@${new Number(9600).toString(16)}`,
       receiver: contractAddress
     };
     await refreshAccount();
@@ -90,7 +117,7 @@ const Actions = () => {
   const sendVinTransaction = async () => {
     const pongTransaction = {
       value: '0',
-      data: `addVIN@${BytesValue.fromUTF8('bobcar')}`,
+      data: 'addVIN@6d696b65636172',
       receiver: contractAddress
     };
     await refreshAccount();
@@ -112,7 +139,7 @@ const Actions = () => {
   const sendMeasureUnitTransaction = async () => {
     const measureUnitTransaction = {
       value: '0',
-      data: `addMeasureUnit@${BytesValue.fromUTF8('bobcar')}`,
+      data: `addMeasureUnit@${BytesValue.fromUTF8('kilometers')}`,
       receiver: contractAddress
     };
     await refreshAccount();
@@ -162,6 +189,30 @@ const Actions = () => {
             <span className='text-white'>
               <a href='/' className='text-white text-decoration-none'>
                 Add VIN
+              </a>
+            </span>
+          </div>
+        </div>
+      ) : (
+        <>
+          <div className='d-flex flex-column'>
+            <div
+              {...{
+                className: 'action-btn disabled'
+              }}
+            ></div>
+          </div>
+        </>
+      )}
+      {!hasMeasureUnit && !hasPendingTransactions ? (
+        <div className='d-flex flex-column'>
+          <div className='action-btn' onClick={sendMeasureUnitTransaction}>
+            <button className='btn'>
+              <FontAwesomeIcon icon={faArrowUp} className='text-primary' />
+            </button>
+            <span className='text-white'>
+              <a href='/' className='text-white text-decoration-none'>
+                Add Measure Unit
               </a>
             </span>
           </div>
