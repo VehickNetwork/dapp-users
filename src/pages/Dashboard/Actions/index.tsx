@@ -12,7 +12,8 @@ import {
   ContractFunction,
   ProxyProvider,
   BytesValue,
-  Query
+  Query,
+  TransactionPayload
 } from '@elrondnetwork/erdjs';
 import { faArrowUp, faArrowDown } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -123,7 +124,9 @@ const Actions = () => {
   const sendVinTransaction = async () => {
     const pongTransaction = {
       value: '0',
-      data: `addVIN@${inputText}`,
+      data: new String(
+        'addVIN@' + Buffer.from(String(inputText), 'utf8').toString('hex')
+      ),
       receiver: contractAddress
     };
     await refreshAccount();
@@ -145,7 +148,10 @@ const Actions = () => {
   const sendMeasureUnitTransaction = async () => {
     const measureUnitTransaction = {
       value: '0',
-      data: `addMeasureUnit@${String(inputText)}`,
+      data: new String(
+        'addMeasureUnit@' +
+          Buffer.from(String(inputText), 'utf8').toString('hex')
+      ),
       receiver: contractAddress
     };
     await refreshAccount();
