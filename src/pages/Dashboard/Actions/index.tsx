@@ -30,6 +30,12 @@ const Actions = () => {
       string | null
     >(null);
 
+  const [inputText, setInputText] = React.useState<string>();
+
+  function handleChange(event: any) {
+    setInputText(event.target.value);
+    console.log(inputText);
+  }
   // eslint-disable-next-line react-hooks/exhaustive-deps
 
   React.useEffect(() => {
@@ -95,7 +101,7 @@ const Actions = () => {
   const sendMileageTransaction = async () => {
     const mileageTransaction = {
       value: '0',
-      data: `addMileage@${new Number(9600).toString(16)}`,
+      data: `addMileage@${new Number(inputText).toString(16)}`,
       receiver: contractAddress
     };
     await refreshAccount();
@@ -117,7 +123,7 @@ const Actions = () => {
   const sendVinTransaction = async () => {
     const pongTransaction = {
       value: '0',
-      data: 'addVIN@6d696b65636172',
+      data: `addVIN@${inputText}`,
       receiver: contractAddress
     };
     await refreshAccount();
@@ -139,7 +145,7 @@ const Actions = () => {
   const sendMeasureUnitTransaction = async () => {
     const measureUnitTransaction = {
       value: '0',
-      data: `addMeasureUnit@${BytesValue.fromUTF8('kilometers')}`,
+      data: `addMeasureUnit@${String(inputText)}`,
       receiver: contractAddress
     };
     await refreshAccount();
@@ -228,6 +234,9 @@ const Actions = () => {
           </div>
         </>
       )}
+      <div>
+        <input onChange={handleChange}></input>
+      </div>
     </div>
   );
 };
