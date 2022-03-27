@@ -1,4 +1,5 @@
 import * as React from 'react';
+import {BigNumber} from 'bignumber.js';
 import {
   transactionServices,
   useGetAccountInfo,
@@ -13,7 +14,9 @@ import {
   ProxyProvider,
   BytesValue,
   Query,
-  TransactionPayload
+  TransactionPayload,
+  GasLimit,
+  BigUIntValue
 } from '@elrondnetwork/erdjs';
 import { faArrowUp } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -102,15 +105,17 @@ const Actions = () => {
   const sendMileageTransaction = async () => {
     // const MileageTransactionPayload = TransactionPayload.contractCall()
     //   .setFunction(new ContractFunction('addMileage'))
-    //   .setArgs([])
+    //   .setArgs([new BigUIntValue(new BigNumber(12.365))])
     //   .build();
     let hex = Number(inputText).toString(16);
     if (hex.length % 2 == 1) {
       hex = String('0' + hex);
     }
+
     const mileageTransaction = {
       value: '0',
       data: new String('addMileage@' + hex),
+      gasLimit: new GasLimit(Number(50000) + Number(1500) + Number(hex.length)),
       receiver: contractAddress
     };
     await refreshAccount();
