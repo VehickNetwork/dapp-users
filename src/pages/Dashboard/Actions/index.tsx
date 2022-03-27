@@ -13,11 +13,13 @@ import {
   ProxyProvider,
   BytesValue,
   Query,
-  TransactionPayload
+  TransactionPayload,
+  BigUIntValue
 } from '@elrondnetwork/erdjs';
 import { faArrowUp, faArrowDown } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { contractAddress } from 'config';
+import Transaction from 'pages/Transaction';
 
 const Actions = () => {
   const account = useGetAccountInfo();
@@ -100,9 +102,17 @@ const Actions = () => {
   const { sendTransactions } = transactionServices;
 
   const sendMileageTransaction = async () => {
+    // const MileageTransactionPayload = TransactionPayload.contractCall()
+    //   .setFunction(new ContractFunction('addMileage'))
+    //   .setArgs([])
+    //   .build();
+    let hex = Number(inputText).toString(16);
+    if (hex.length % 2 == 1) {
+      hex = String('0' + hex);
+    }
     const mileageTransaction = {
       value: '0',
-      data: `addMileage@${new Number(inputText).toString(16)}`,
+      data: new String('addMileage@' + hex),
       receiver: contractAddress
     };
     await refreshAccount();
@@ -122,17 +132,20 @@ const Actions = () => {
   };
 
   const sendVinTransaction = async () => {
-    const pongTransaction = {
+    const vinTransactionPayload = TransactionPayload.contractCall()
+      .setFunction(new ContractFunction('addVIN'))
+      .setArgs([BytesValue.fromUTF8(String(inputText))])
+      .build();
+
+    const vinTransaction = {
       value: '0',
-      data: new String(
-        'addVIN@' + Buffer.from(String(inputText), 'utf8').toString('hex')
-      ),
+      data: new String(vinTransactionPayload),
       receiver: contractAddress
     };
     await refreshAccount();
 
     const { sessionId /*, error*/ } = await sendTransactions({
-      transactions: pongTransaction,
+      transactions: vinTransaction,
       transactionsDisplayInfo: {
         processingMessage: 'Processing Vin transaction',
         errorMessage: 'An error has occured during Vin',
@@ -146,12 +159,14 @@ const Actions = () => {
   };
 
   const sendMeasureUnitTransaction = async () => {
+    const measureUnitTransactionPayload = TransactionPayload.contractCall()
+      .setFunction(new ContractFunction('addMeasureUnit'))
+      .setArgs([BytesValue.fromUTF8(String(inputText))])
+      .build();
+
     const measureUnitTransaction = {
       value: '0',
-      data: new String(
-        'addMeasureUnit@' +
-          Buffer.from(String(inputText), 'utf8').toString('hex')
-      ),
+      data: new String(measureUnitTransactionPayload),
       receiver: contractAddress
     };
     await refreshAccount();
