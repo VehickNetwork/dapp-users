@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { BigNumber } from 'bignumber.js';
+import BigNumber from 'bignumber.js';
 import {
   transactionServices,
   useGetAccountInfo,
@@ -16,7 +16,8 @@ import {
   Query,
   TransactionPayload,
   GasLimit,
-  BigUIntValue
+  BigUIntValue,
+  NetworkConfig
 } from '@elrondnetwork/erdjs';
 import { faArrowUp } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -35,7 +36,6 @@ const Actions = () => {
     >(null);
 
   const [inputText, setInputText] = React.useState<string>();
-
   function handleChange(event: any) {
     setInputText(event.target.value);
     console.log(inputText);
@@ -103,19 +103,23 @@ const Actions = () => {
   const { sendTransactions } = transactionServices;
 
   const sendMileageTransaction = async () => {
-    // const MileageTransactionPayload = TransactionPayload.contractCall()
-    //   .setFunction(new ContractFunction('addMileage'))
-    //   .setArgs([new BigUIntValue(new BigNumber(12.365))])
-    //   .build();
     let hex = Number(inputText).toString(16);
     if (hex.length % 2 == 1) {
       hex = String('0' + hex);
     }
-
+    const MileageTransactionPayload = TransactionPayload.contractCall()
+      .setFunction(new ContractFunction('addMileage'))
+      .setArgs([BytesValue.fromHex(hex)])
+      .build();
+    const estimatedGasLimit = new GasLimit(
+      (new NetworkConfig().MinGasLimit.valueOf() +
+        GasLimit.forTransfer(MileageTransactionPayload).valueOf()) *
+        new GasLimit(40).valueOf()
+    );
     const mileageTransaction = {
       value: '0',
       data: new String('addMileage@' + hex),
-      gasLimit: new GasLimit(Number(50000) + Number(1500) + Number(hex.length)),
+      gasLimit: estimatedGasLimit,
       receiver: contractAddress
     };
     await refreshAccount();
@@ -139,10 +143,15 @@ const Actions = () => {
       .setFunction(new ContractFunction('addVIN'))
       .setArgs([BytesValue.fromUTF8(String(inputText))])
       .build();
-
+    const estimatedGasLimit = new GasLimit(
+      (new NetworkConfig().MinGasLimit.valueOf() +
+        GasLimit.forTransfer(vinTransactionPayload).valueOf()) *
+        new GasLimit(40).valueOf()
+    );
     const vinTransaction = {
       value: '0',
       data: new String(vinTransactionPayload),
+      gasLimit: new GasLimit(5000000),
       receiver: contractAddress
     };
     await refreshAccount();
@@ -166,10 +175,15 @@ const Actions = () => {
       .setFunction(new ContractFunction('addMeasureUnit'))
       .setArgs([BytesValue.fromUTF8(String(inputText))])
       .build();
-
+    const estimatedGasLimit = new GasLimit(
+      (new NetworkConfig().MinGasLimit.valueOf() +
+        GasLimit.forTransfer(measureUnitTransactionPayload).valueOf()) *
+        new GasLimit(40).valueOf()
+    );
     const measureUnitTransaction = {
       value: '0',
       data: new String(measureUnitTransactionPayload),
+      gasLimit: estimatedGasLimit,
       receiver: contractAddress
     };
     await refreshAccount();
