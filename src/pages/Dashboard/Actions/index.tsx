@@ -13,13 +13,11 @@ import {
   ProxyProvider,
   BytesValue,
   Query,
-  TransactionPayload,
-  BigUIntValue
+  TransactionPayload
 } from '@elrondnetwork/erdjs';
-import { faArrowUp, faArrowDown } from '@fortawesome/free-solid-svg-icons';
+import { faArrowUp } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { contractAddress } from 'config';
-import Transaction from 'pages/Transaction';
 
 const Actions = () => {
   const account = useGetAccountInfo();
@@ -187,7 +185,7 @@ const Actions = () => {
 
   return (
     <div className='d-flex mt-4 justify-content-center'>
-      {hasVin && !hasPendingTransactions ? (
+      {hasVin && hasMeasureUnit && !hasPendingTransactions ? (
         <div className='action-btn' onClick={sendMileageTransaction}>
           <button className='btn'>
             <FontAwesomeIcon icon={faArrowUp} className='text-primary' />
