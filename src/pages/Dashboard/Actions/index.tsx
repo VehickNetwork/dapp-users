@@ -1,5 +1,5 @@
 import * as React from 'react';
-import BigNumber from 'bignumber.js';
+
 import {
   transactionServices,
   useGetAccountInfo,
@@ -16,7 +16,6 @@ import {
   Query,
   TransactionPayload,
   GasLimit,
-  BigUIntValue,
   NetworkConfig
 } from '@elrondnetwork/erdjs';
 import { faArrowUp } from '@fortawesome/free-solid-svg-icons';
@@ -28,6 +27,7 @@ const Actions = () => {
   const { hasPendingTransactions } = useGetPendingTransactions();
   const { network } = useGetNetworkConfig();
   const { address } = account;
+  const gasLimitMultiplier = 35;
 
   const [hasVin, setHasVin] = React.useState<boolean>();
   const [hasMeasureUnit, setHasMeasureUnit] = React.useState<boolean>();
@@ -114,7 +114,7 @@ const Actions = () => {
     const estimatedGasLimit = new GasLimit(
       (new NetworkConfig().MinGasLimit.valueOf() +
         GasLimit.forTransfer(MileageTransactionPayload).valueOf()) *
-        new GasLimit(40).valueOf()
+        new GasLimit(gasLimitMultiplier).valueOf()
     );
     const mileageTransaction = {
       value: '0',
@@ -146,12 +146,12 @@ const Actions = () => {
     const estimatedGasLimit = new GasLimit(
       (new NetworkConfig().MinGasLimit.valueOf() +
         GasLimit.forTransfer(vinTransactionPayload).valueOf()) *
-        new GasLimit(40).valueOf()
+        new GasLimit(gasLimitMultiplier).valueOf()
     );
     const vinTransaction = {
       value: '0',
       data: new String(vinTransactionPayload),
-      gasLimit: new GasLimit(5000000),
+      gasLimit: estimatedGasLimit,
       receiver: contractAddress
     };
     await refreshAccount();
@@ -178,7 +178,7 @@ const Actions = () => {
     const estimatedGasLimit = new GasLimit(
       (new NetworkConfig().MinGasLimit.valueOf() +
         GasLimit.forTransfer(measureUnitTransactionPayload).valueOf()) *
-        new GasLimit(40).valueOf()
+        new GasLimit(gasLimitMultiplier).valueOf()
     );
     const measureUnitTransaction = {
       value: '0',
