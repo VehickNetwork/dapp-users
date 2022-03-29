@@ -27,7 +27,7 @@ const Actions = () => {
   const { hasPendingTransactions } = useGetPendingTransactions();
   const { network } = useGetNetworkConfig();
   const { address } = account;
-  const gasLimitMultiplier = 35;
+  const gasLimitMultiplier = 25;
 
   const [hasVin, setHasVin] = React.useState<boolean>();
   const [hasMeasureUnit, setHasMeasureUnit] = React.useState<boolean>();
