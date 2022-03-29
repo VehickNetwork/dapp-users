@@ -28,6 +28,7 @@ const fetchTransactions = (url: string) =>
       });
 
       return {
+
         data: data,
         success: data !== undefined
       };

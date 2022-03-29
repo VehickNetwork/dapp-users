@@ -16,7 +16,7 @@ const Home = () => {
 
               <p className='mb-3'>
                 This is an Vehick demo dashboard.
-                <br /> Login using your Vehick Credentials.
+                <br /> Login using your Elrond Credentials.
               </p>
 
               <Link
