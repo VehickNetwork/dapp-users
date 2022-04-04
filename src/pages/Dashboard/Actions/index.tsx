@@ -118,7 +118,7 @@ const Actions = () => {
     );
     const mileageTransaction = {
       value: '0',
-      data: new String('addMileage@' + hex),
+      data: new String(MileageTransactionPayload),
       gasLimit: estimatedGasLimit,
       receiver: contractAddress
     };
