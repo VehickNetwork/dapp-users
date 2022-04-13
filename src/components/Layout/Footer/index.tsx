@@ -10,9 +10,9 @@ const Footer = () => {
             target: '_blank'
           }}
           className='d-flex align-items-center'
-          href='https://elrond.com/'
+          href='https://vehicknetwork.com/'
         >
-          Made with <HeartIcon className='mx-1' /> by Vehick Chain.
+          Made with <HeartIcon className='mx-1' /> by Vehick Network.
         </a>
       </div>
     </footer>

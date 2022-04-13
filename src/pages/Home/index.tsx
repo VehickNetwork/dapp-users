@@ -15,7 +15,7 @@ const Home = () => {
               </h2>
 
               <p className='mb-3'>
-                This is an Vehick demo dashboard.
+                This is an Vehick demo interaction with the smart contract.
                 <br /> Login using your Elrond Credentials.
               </p>
 
@@ -27,6 +27,15 @@ const Home = () => {
                 Login
               </Link>
             </div>
+            <a
+              {...{
+                target: '_blank'
+              }}
+              className='text-center pt-4 text-muted'
+              href='https://github.com/VehickNetwork/dapp-users#readme'
+            >
+              Check steps here...
+            </a>
           </div>
         </div>
       </div>
