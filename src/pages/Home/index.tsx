@@ -15,7 +15,7 @@ const Home = () => {
               </h2>
 
               <p className='mb-3'>
-                This is an Vehick demo interaction with the smart contract.
+                This is a Vehick demo interaction with the smart contract.
                 <br /> Login using your Elrond Credentials.
               </p>
 
