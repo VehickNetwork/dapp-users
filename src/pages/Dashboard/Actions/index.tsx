@@ -38,7 +38,6 @@ const Actions = () => {
   const [inputText, setInputText] = React.useState<string>();
   function handleChange(event: any) {
     setInputText(event.target.value);
-    console.log(inputText);
   }
   // eslint-disable-next-line react-hooks/exhaustive-deps
 
@@ -53,7 +52,6 @@ const Actions = () => {
       .queryContract(query_Vin)
       .then(({ returnData }) => {
         const [encoded] = returnData;
-        console.log(encoded);
         switch (encoded) {
           case undefined:
             setHasVin(false);
@@ -80,7 +78,6 @@ const Actions = () => {
       .queryContract(query_measureUnit)
       .then(({ returnData }) => {
         const [encoded] = returnData;
-        console.log(encoded);
         switch (encoded) {
           case undefined:
             setHasMeasureUnit(false);
